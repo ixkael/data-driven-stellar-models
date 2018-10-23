@@ -35,17 +35,19 @@ for line in DAtable:
         BPmagDA.append(float(columns[22]))
         RPmagDA.append(float(columns[23]))
         ageDA.append(float(columns[24]))
+bbox=[1500.,120000.0,6.5,9.5]
+deg=1
 arrange=lambda vec: np.transpose(np.reshape(vec,(len(loggDA),len(TeffDA))))
 massDAf=RectBivariateSpline(TeffDA,loggDA,arrange(massDA))
-MbolDAf=RectBivariateSpline(TeffDA,loggDA,arrange(MbolDA))
-uDAf=RectBivariateSpline(TeffDA,loggDA,arrange(uDA))
-gDAf=RectBivariateSpline(TeffDA,loggDA,arrange(gDA))
-rDAf=RectBivariateSpline(TeffDA,loggDA,arrange(rDA))
-iDAf=RectBivariateSpline(TeffDA,loggDA,arrange(iDA))
-zDAf=RectBivariateSpline(TeffDA,loggDA,arrange(zDA))
-GmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(GmagDA))
-BPmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(BPmagDA))
-RPmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(RPmagDA))
+MbolDAf=RectBivariateSpline(TeffDA,loggDA,arrange(MbolDA),bbox=bbox,kx=deg,ky=deg)
+uDAf=RectBivariateSpline(TeffDA,loggDA,arrange(uDA),bbox=bbox,kx=deg,ky=deg)
+gDAf=RectBivariateSpline(TeffDA,loggDA,arrange(gDA),bbox=bbox,kx=deg,ky=deg)
+rDAf=RectBivariateSpline(TeffDA,loggDA,arrange(rDA),bbox=bbox,kx=deg,ky=deg)
+iDAf=RectBivariateSpline(TeffDA,loggDA,arrange(iDA),bbox=bbox,kx=deg,ky=deg)
+zDAf=RectBivariateSpline(TeffDA,loggDA,arrange(zDA),bbox=bbox,kx=deg,ky=deg)
+GmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(GmagDA),bbox=bbox,kx=deg,ky=deg)
+BPmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(BPmagDA),bbox=bbox,kx=deg,ky=deg)
+RPmagDAf=RectBivariateSpline(TeffDA,loggDA,arrange(RPmagDA),bbox=bbox,kx=deg,ky=deg)
 ageDAf=RectBivariateSpline(TeffDA,loggDA,arrange(ageDA))
 lnageDAf=RectBivariateSpline(TeffDA,loggDA,arrange(np.log(ageDA)))
 def BergeronDAInterp(Teff_in,logg_in):
@@ -56,7 +58,7 @@ def BergeronDAInterp(Teff_in,logg_in):
         return np.array(output)
     except TypeError:
         #return [uDAf.ev(Teff_in,logg_in)[0],gDAf.ev(Teff_in,logg_in)[0],rDAf.ev(Teff_in,logg_in)[0],iDAf.ev(Teff_in,logg_in)[0],zDAf.ev(Teff_in,logg_in)[0]]
-        return [uDAf.ev(Teff_in,logg_in),gDAf.ev(Teff_in,logg_in),rDAf.ev(Teff_in,logg_in),iDAf.ev(Teff_in,logg_in),zDAf.ev(Teff_in,logg_in)]
+        return np.array( [uDAf.ev(Teff_in,logg_in),gDAf.ev(Teff_in,logg_in),rDAf.ev(Teff_in,logg_in),iDAf.ev(Teff_in,logg_in),zDAf.ev(Teff_in,logg_in)] )
 
 #### DB
 #DBtable=open("/Users/axelwidmark/Documents/Fysik/WD/BergeronModels/AllTables/Table_DB")
@@ -89,17 +91,18 @@ for line in DBtable:
         BPmagDB.append(float(columns[22]))
         RPmagDB.append(float(columns[23]))
         ageDB.append(float(columns[24]))
+bbox=[3500.,120000.0,6.5,9.5]
 arrange=lambda vec: np.transpose(np.reshape(vec,(len(loggDB),len(TeffDB))))
 massDBf=RectBivariateSpline(TeffDB,loggDB,arrange(massDB))
-MbolDBf=RectBivariateSpline(TeffDB,loggDB,arrange(MbolDB))
-uDBf=RectBivariateSpline(TeffDB,loggDB,arrange(uDB))
-gDBf=RectBivariateSpline(TeffDB,loggDB,arrange(gDB))
-rDBf=RectBivariateSpline(TeffDB,loggDB,arrange(rDB))
-iDBf=RectBivariateSpline(TeffDB,loggDB,arrange(iDB))
-zDBf=RectBivariateSpline(TeffDB,loggDB,arrange(zDB))
-GmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(GmagDB))
-BPmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(BPmagDB))
-RPmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(RPmagDB))
+MbolDBf=RectBivariateSpline(TeffDB,loggDB,arrange(MbolDB),bbox=bbox,kx=deg,ky=deg)
+uDBf=RectBivariateSpline(TeffDB,loggDB,arrange(uDB),bbox=bbox,kx=deg,ky=deg)
+gDBf=RectBivariateSpline(TeffDB,loggDB,arrange(gDB),bbox=bbox,kx=deg,ky=deg)
+rDBf=RectBivariateSpline(TeffDB,loggDB,arrange(rDB),bbox=bbox,kx=deg,ky=deg)
+iDBf=RectBivariateSpline(TeffDB,loggDB,arrange(iDB),bbox=bbox,kx=deg,ky=deg)
+zDBf=RectBivariateSpline(TeffDB,loggDB,arrange(zDB),bbox=bbox,kx=deg,ky=deg)
+GmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(GmagDB),bbox=bbox,kx=deg,ky=deg)
+BPmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(BPmagDB),bbox=bbox,kx=deg,ky=deg)
+RPmagDBf=RectBivariateSpline(TeffDB,loggDB,arrange(RPmagDB),bbox=bbox,kx=deg,ky=deg)
 ageDBf=RectBivariateSpline(TeffDB,loggDB,arrange(ageDB))
 lnageDBf=RectBivariateSpline(TeffDB,loggDB,arrange(np.log(ageDB)))
 def BergeronDBInterp(Teff_in,logg_in):
@@ -109,15 +112,18 @@ def BergeronDBInterp(Teff_in,logg_in):
             output.append([uDBf.ev(Teff_in[i],logg_in[i]),gDBf.ev(Teff_in[i],logg_in[i]),rDBf.ev(Teff_in[i],logg_in[i]),iDBf.ev(Teff_in[i],logg_in[i]),zDBf.ev(Teff_in[i],logg_in[i])])
         return np.array(output)
     except TypeError:
-        #return [uDBf.ev(Teff_in,logg_in)[0],gDBf.ev(Teff_in,logg_in)[0],rDBf.ev(Teff_in,logg_in)[0],iDBf.ev(Teff_in,logg_in)[0],zDBf.ev(Teff_in,logg_in)[0]]
-        return [uDBf.ev(Teff_in,logg_in),gDBf.ev(Teff_in,logg_in),rDBf.ev(Teff_in,logg_in),iDBf.ev(Teff_in,logg_in),zDBf.ev(Teff_in,logg_in)]
+        return np.array( [uDBf.ev(Teff_in,logg_in),gDBf.ev(Teff_in,logg_in),rDBf.ev(Teff_in,logg_in),iDBf.ev(Teff_in,logg_in),zDBf.ev(Teff_in,logg_in)] )
+
+
+
+
 
 print(BergeronDAInterp(1e4,8.)[0])
 
-grid_len = 50
+grid_len = 500
 temp_vec = np.logspace(np.log10(3000.),np.log10(120000.),grid_len)
-loggDA_vec=np.linspace(7.,9.5,grid_len)
-loggDB_vec=np.linspace(7.,9.,grid_len)
+loggDA_vec=np.linspace(6.5,9.5,grid_len)
+loggDB_vec=np.linspace(6.5,9.,grid_len)
 
 DA_grid = np.array( [[[BergeronDAInterp(t,g)[i] for g in loggDA_vec] for t in temp_vec] for i in range(5)] )
 DB_grid = np.array( [[[BergeronDAInterp(t,g)[i] for g in loggDB_vec] for t in temp_vec] for i in range(5)] )
@@ -129,5 +135,24 @@ for i in range(5):
 print(np.shape(DA_grid))
 print(np.shape(DB_grid))
 print(np.shape(model_grid))
+
+diffA = 1.
+diffB = 1.
+for i in range(grid_len-1):
+    for j in range(grid_len):
+        for k in range(5):
+            diff = abs(DA_grid[k][i][j]-DA_grid[k][i+1][j])
+            if diff<diffA:
+                diffA = diff
+            diff = abs(DA_grid[k][j][i]-DA_grid[k][j][i+1])
+            if diff<diffA:
+                diffA = diff
+            diff = abs(DB_grid[k][i][j]-DB_grid[k][i+1][j])
+            if diff<diffB:
+                diffB = diff
+            diff = abs(DB_grid[k][j][i]-DB_grid[k][j][i+1])
+            if diff<diffB:
+                diffB = diff
+print(diffA,diffB)
 
 np.savez('./model_grids',model_grid=model_grid,DA_grid=DA_grid,DB_grid=DB_grid,temp_vec=temp_vec,loggDA_vec=loggDA_vec,loggDB_vec=loggDB_vec)
