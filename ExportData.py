@@ -23,13 +23,11 @@ df['gmag'] = df['sdssdr9_g_mag']-5.*(np.log10(1e3/df['parallax'])-1.)
 df['rmag'] = df['sdssdr9_r_mag']-5.*(np.log10(1e3/df['parallax'])-1.)
 df['imag'] = df['sdssdr9_i_mag']-5.*(np.log10(1e3/df['parallax'])-1.)
 df['zmag'] = df['sdssdr9_z_mag']-5.*(np.log10(1e3/df['parallax'])-1.)
-#df['ugr'] = -0.4925*df['sdssdr9_u_mag']-0.5075*df['sdssdr9_g_mag']+df['sdssdr9_r_mag']
-cleanAcut = (df['umag']>4.16) & (df['umag']<21.) & (df['gmag']>4.69) & (df['gmag']<19.4) & (df['rmag']>5.3) & (df['rmag']<18.6) & (df['imag']>5.6) & (df['imag']<18.4) & (df['zmag']>6.) & (df['zmag']<18.3)
-#cleanAcut = np.isfinite(df['sdssdr9_u_mag']) & np.isfinite(df['sdssdr9_g_mag']) & np.isfinite(df['sdssdr9_r_mag']) & np.isfinite(df['sdssdr9_i_mag']) & np.isfinite(df['sdssdr9_z_mag'])
-cleanBcut = (df['sdssdr9_u_mag_error']<0.2) & (df['sdssdr9_g_mag_error']<0.2) & (df['sdssdr9_r_mag_error']<0.2) & (df['sdssdr9_i_mag_error']<0.2) & (df['sdssdr9_z_mag_error']<0.2)
+cleanAcut = (df['sdssdr9_clean_flag']==1.)
+cleanBcut = (df['sdssdr9_u_mag_error']<0.2) & (df['sdssdr9_g_mag_error']<0.2) & (df['sdssdr9_r_mag_error']<0.2) & (df['sdssdr9_i_mag_error']<0.2)# & (df['sdssdr9_z_mag_error']<0.2)
 cleanCcut = (1./df['parallax']<0.2) & (df['parallax']/df['parallax_error']>10.)
 cleanDcut = (df['visibility_periods_used']>8) & (df['astrometric_chi2_al']/(df['astrometric_n_good_obs_al']-5.)<1.44*(1.+(df['phot_g_mean_mag']<19.5)*(np.exp(-0.4*(df['phot_g_mean_mag']-19.5))-1.)))
-cleancuts = cleanAcut & cleanBcut & cleanCcut & cleanDcut
+cleancuts =  cleanBcut & cleanCcut & cleanDcut & cleanAcut
 print(np.shape(df[cleancuts]))
 
 obsmags = np.transpose( [df[cleancuts]['umag'].values,df[cleancuts]['gmag'].values,df[cleancuts]['rmag'].values,df[cleancuts]['imag'].values,df[cleancuts]['zmag'].values] )
@@ -47,7 +45,23 @@ obsmags_covar_logdet = [math.log(np.linalg.det(o_c_i)) for o_c_i in obsmags_cova
 print(obsmags_covar_logdet[0])
 
 
-#np.savez('./WD_data',obsmags=obsmags,obsmags_covar_chol=obsmags_covar_chol,obsmags_covar_logdet=obsmags_covar_logdet)
+from ConvertCoordDR2 import radec2lb
+from scipy.interpolate import RegularGridInterpolator
+npzfile = np.load("../Data/3D_dust_interpolation.npz")
+x = npzfile['x']
+y = npzfile['y']
+z = npzfile['z']
+BmV_matrix = npzfile['BmV_matrix']
+BmV_interp = RegularGridInterpolator((x,y,z), BmV_matrix, method='linear')
+dust_reddening = []
+print(df[cleancuts].index)
+for i in df[cleancuts].index:
+    l,b = radec2lb(pi/180.*df['ra'][i],pi/180.*df['dec'][i])
+    xyzcoords = [1e3/df['parallax'][i]*math.cos(l)*math.cos(b), 1e3/df['parallax'][i]*math.sin(l)*math.cos(b), 1e3/df['parallax'][i]*math.sin(b)]
+    dust_reddening.append( BmV_interp(xyzcoords) )
+
+np.savez('./WD_data_clean',obsmags=obsmags,obsmags_covar_chol=obsmags_covar_chol,obsmags_covar_logdet=obsmags_covar_logdet,dust_reddening=dust_reddening)
+print('Sample saved!')
 
 def multivariate_normal(self,diff,cov):
     dim = len(diff)
@@ -57,6 +71,10 @@ def multivariate_normal(self,diff,cov):
     return math.exp(-1./2.*np.dot(np.dot(cov_inv,diff),diff))/math.sqrt((2.*pi)**dim*cov_det)
 
 #exit()
+
+
+
+
 
 
 from BergeronInterp import BergeronDAInterp,BergeronDBInterp
