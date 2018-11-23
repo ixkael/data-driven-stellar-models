@@ -1,0 +1,19 @@
+
+# to run MPI sessions interactively
+qsub -I -l nodes=1:ppn=40 -q cores40
+qsub -I -l nodes=1:ppn=20 -q smp
+
+
+# Export data and scripts to hypatia
+
+scp WD_data*.npz ehypatia:data-driven-stellar-models
+
+scp model_grids*.npz ehypatia:data-driven-stellar-models
+scp Stellar\ grid\ corrections\ -\ run.py ehypatia:data-driven-stellar-models
+scp mpiscript_40 ehypatia:data-driven-stellar-models
+
+
+# retrieve results
+
+scp ehypatia:data-driven-stellar-models/*npy .
+

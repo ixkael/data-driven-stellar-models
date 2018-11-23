@@ -1,0 +1,8 @@
+#PBS -l nodes=1:ppn=40
+#PBS -q cores40
+#PBS -N WD_stellar_grid_corrections
+
+setenv OMP_NUM_THREADS 40
+cd data-driven-stellar-models
+module load rocks-openmpi python/3.6.4 compilers/gnu/7.3.0
+python3 Stellar\ grid\ corrections\ -\ run.py
